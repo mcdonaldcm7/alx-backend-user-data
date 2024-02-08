@@ -2,23 +2,20 @@
 """
 Task
 
-0. Regex-ing
+1. Log formatter
 
-Write a function called filter_datum that returns the log message obfuscated:
+Update the RedactingFormatter class to accept a list of strings fields
+constructor argument.
 
-    - Arguments:
-        * fields: a list of strings representing all fields to obfuscate
-        * redaction: a string representing by what the field will be obfuscated
-        * message: a string representing the log line
-        * separator: a string representing by which character is separating all
-        fields in the log line (message)
-    - The function should use a regex to replace occurrences of certain field
-    values.
-    - filter_datum should be less than 5 lines long and use re.sub to perform
-    the substitution with a single regex.
+Implement the format method to filter values in incoming log records using
+filter_datum. Values for fields in fields should be filtered.
+
+DO NOT extrapolate FORMAT manually. The format method should be less than 5
+lines long.
 """
 from typing import List
 import re
+import logging
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
@@ -26,12 +23,31 @@ def filter_datum(fields: List[str], redaction: str, message: str,
     """
     Obfuscates message with redaction, to mask the fields in the fields list
     """
-    if len(fields) == 0:
-        return message
-    return re.sub(r'({})=.*?(?={},|$)'.format('|'.join(fields), separator),
-                  r'\1={}{}'.format(redaction, separator), message)
-    # for field in fields:
-    #    pattern = field + '=.*?' + separator
-    #    repl = field + '=' + redaction + separator
-    #    message = re.sub(pattern, repl, message)
-    # return message
+    for field in fields:
+        repl = field + '=' + redaction + separator
+        message = re.sub(field + '=.*?' + separator, repl, message)
+    return message
+
+
+class RedactingFormatter(logging.Formatter):
+    """ 
+    Redacting Formatter class
+    """
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    def __init__(self, fields: List[str]):
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+        self._fields = fields
+
+    def format(self, record: logging.LogRecord) -> str:
+        """
+        Filters values in incoming log records using filter_datum
+        """
+        filtered_msg = filter_datum(self._fields, self.REDACTION, record.msg,
+                                self.SEPARATOR)
+        record.msg = filtered_msg
+        print("Result of filtered_msg is {}".format(filtered_msg))
+        return super().format(record)

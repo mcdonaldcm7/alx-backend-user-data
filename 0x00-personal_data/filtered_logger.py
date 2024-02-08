@@ -22,12 +22,14 @@ import re
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
-                 seperator: str) -> str:
+                 separator: str) -> str:
     """
     Obfuscates message with redaction, to mask the fields in the fields list
     """
-    for field in fields:
-        pattern = field + '=.*?' + seperator
-        repl = field + '=' + redaction + seperator
-        message = re.sub(pattern, repl, message)
-    return message
+    return re.sub(r'({})=.*?(?={},|$)'.format('|'.join(fields), separator),
+                  r'\1={}{}'.format(redaction, separator), message)
+    # for field in fields:
+    #    pattern = field + '=.*?' + separator
+    #    repl = field + '=' + redaction + separator
+    #    message = re.sub(pattern, repl, message)
+    # return message

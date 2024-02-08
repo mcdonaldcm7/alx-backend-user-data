@@ -26,6 +26,8 @@ def filter_datum(fields: List[str], redaction: str, message: str,
     """
     Obfuscates message with redaction, to mask the fields in the fields list
     """
+    if len(fields) == 0:
+        return message
     return re.sub(r'({})=.*?(?={},|$)'.format('|'.join(fields), separator),
                   r'\1={}{}'.format(redaction, separator), message)
     # for field in fields:

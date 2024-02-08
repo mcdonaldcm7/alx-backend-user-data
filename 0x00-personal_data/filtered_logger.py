@@ -18,17 +18,17 @@ import re
 import logging
 
 
-def filter_datum(fields: List[str], redtn: str, msg: str, spr: str) -> str:
-    """
-    Obfuscates message with redaction, to mask the fields in the fields list
-    """
+def filter_datum(fields: List[str], redaction: str, message: str,
+                 separator: str) -> str:
+    """Obfuscates message with redaction"""
     for f in fields:
-        msg = re.sub((f + '=.*?' + spr), (f + '=' + redtn + spr), msg)
-    return msg
+        repl = f + '=' + redaction + separator
+        message = re.sub((f + '=.*?' + separator), repl, message)
+    return message
 
 
 class RedactingFormatter(logging.Formatter):
-    """
+    """ 
     Redacting Formatter class
     """
 
@@ -45,7 +45,7 @@ class RedactingFormatter(logging.Formatter):
         Filters values in incoming log records using filter_datum
         """
         filtered_msg = filter_datum(self._fields, self.REDACTION, record.msg,
-                                    self.SEPARATOR)
+                                self.SEPARATOR)
         record.msg = filtered_msg
         print("Result of filtered_msg is {}".format(filtered_msg))
         return super().format(record)

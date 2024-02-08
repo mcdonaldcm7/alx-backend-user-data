@@ -2,24 +2,32 @@
 """
 Task
 
-2. Create logger
+3. Connect to secure database
 
-Implement a get_logger function that takes no arguments and returns a
-logging.Logger object.
+Database credentials should NEVER be stored in code or checked into version
+control. One secure option is to store them as environment variable on the
+application server.
 
-The logger should be named "user_data" and only log up to logging.INFO level.
-It should not propagate messages to other loggers. It should have a
-StreamHandler with RedactingFormatter as formatter.
+In this task, you will connect to a secure holberton database to read a users
+table. The database is protected by a username and password that are set as
+environment variables on the server named PERSONAL_DATA_DB_USERNAME (set the
+default as “root”), PERSONAL_DATA_DB_PASSWORD (set the default as an empty
+string) and PERSONAL_DATA_DB_HOST (set the default as “localhost”).
 
-Create a tuple PII_FIELDS constant at the root of the module containing the
-fields from user_data.csv that are considered PII. PII_FIELDS can contain only
-5 fields - choose the right list of fields that can are considered as
-“important” PIIs or information that you must hide in your logs. Use it to
-parameterize the formatter.
+The database name is stored in PERSONAL_DATA_DB_NAME.
+
+Implement a get_db function that returns a connector to the database
+(mysql.connector.connection.MySQLConnection object).
+
+Use the os module to obtain credentials from the environment
+Use the module mysql-connector-python to connect to the MySQL database
+(pip3 install mysql-connector-python)
 """
 from typing import List
 import re
 import logging
+import os
+import mysql.connector
 
 
 PII_FIELDS = ("name", "email", "ssn", "ip", "password")
@@ -43,11 +51,33 @@ def get_logger() -> logging.Logger:
     user_data.propagate = False
     user_data.setLevel(logging.INFO)
 
-    formatter = RedactingFormatter(list(PII_FIELDS))
+    formatter = RedactingFormatter(PII_FIELDS)
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
     user_data.addHandler(handler)
     return user_data
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """
+    Connects to a database and returns a connector to the database
+    """
+    username = os.getenv("PERSONAL_DATA_DB_USERNAME")
+    if username is None:
+        username = "root"
+
+    password = os.getenv("PERSONAL_DATA_DB_PASSWORD")
+    if password is None:
+        password = ""
+
+    host = os.getenv("PERSONAL_DATA_DB_HOST")
+    if host is None:
+        host = "localhost"
+
+    db_name = os.getenv("PERSONAL_DATA_DB_NAME")
+    cnx = mysql.connector.connect(user=username, password=password, host=host,
+                                  database=db_name)
+    return cnx
 
 
 class RedactingFormatter(logging.Formatter):

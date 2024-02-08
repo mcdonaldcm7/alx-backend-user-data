@@ -30,7 +30,7 @@ import os
 import mysql.connector
 
 
-PII_FIELDS = ("name", "email", "ssn", "ip", "password")
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
@@ -71,6 +71,12 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     cnx = mysql.connector.connect(user=username, password=password, host=host,
                                   database=db_name)
     return cnx
+
+
+def main() -> None:
+    """
+    """
+    pass
 
 
 class RedactingFormatter(logging.Formatter):

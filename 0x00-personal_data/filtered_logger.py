@@ -23,7 +23,7 @@ def filter_datum(fields: List[str], redaction: str, message: str,
     """Obfuscates message with redaction"""
     return re.sub(r'({})=.*?(?={}|$)'.format('|'.join(fields), separator),
                   r'\1={}{}'.format(redaction, separator), message).replace(
-                          ";;", ";")
+                          ";;", ";") if fields is not None else None
 
 
 class RedactingFormatter(logging.Formatter):

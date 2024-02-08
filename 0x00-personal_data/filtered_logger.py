@@ -75,8 +75,20 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
 
 def main() -> None:
     """
+    Obtain a database connection using get_db and retrieve all rows in the
+    users table and display each row under a filtered format
     """
-    pass
+    cnx = get_db()
+    curA = cnx.cursor()
+    curA.execute("SELECT * FROM users")
+    for (name, email, phone, ssn, password, ip, last_login,
+         user_agent) in curA:
+        message = (
+            "name={};email={};phone={};ssn={};password={};ip={};last_login={};\
+                    user_agent={};".format(name, email, phone, ssn, password,
+                                           ip, last_login, user_agent))
+        logger = get_logger()
+        logger.log(logging.INFO, message)
 
 
 class RedactingFormatter(logging.Formatter):
@@ -100,3 +112,7 @@ class RedactingFormatter(logging.Formatter):
                                     self.SEPARATOR)
         record.msg = filtered_msg
         return super().format(record)
+
+
+if __name__ == "__main__":
+    main()

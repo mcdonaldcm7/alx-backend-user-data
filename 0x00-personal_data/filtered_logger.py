@@ -22,7 +22,7 @@ import re
 import logging
 
 
-PII_FIELDS = ["name", "email", "phone", "ssn", "ip"]
+PII_FIELDS = ("name", "email", "ssn", "ip", "password")
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,

@@ -27,6 +27,8 @@ class Auth:
     def authorization_header(self, request=None) -> str:
         """Unimplemented method for template
         """
+        if 'Authorization' in request.headers:
+            return request.headers.get("Authorization")
         return None
 
     def current_user(self, request=None) -> TypeVar('User'):

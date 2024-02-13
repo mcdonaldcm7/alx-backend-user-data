@@ -40,21 +40,21 @@ def before_request():
 
 
 @app.errorhandler(401)
-def request_unauthorized(error) -> str:
+def request_unauthorized(error):
     """Request Unauthorized handler
     """
     return jsonify({"error": "Unauthorized"}), 401
 
 
 @app.errorhandler(403)
-def resource_forbidden(error) -> str:
+def resource_forbidden(error):
     """Authenticated but not allowed to access resource
     """
     return jsonify({"error": "Forbidden"}), 403
 
 
 @app.errorhandler(404)
-def not_found(error) -> str:
+def not_found(error):
     """ Not found handler
     """
     return jsonify({"error": "Not found"}), 404

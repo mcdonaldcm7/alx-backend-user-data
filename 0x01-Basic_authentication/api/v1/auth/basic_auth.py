@@ -71,9 +71,8 @@ class BasicAuth(Auth):
             return None
 
         from models.user import User
-        from models.base import Base
 
-        if Base.count == 0:
+        if User.count == 0:
             return None
         user_obj = User.search({"email": user_email})
         if user_obj is None or len(user_obj) == 0:

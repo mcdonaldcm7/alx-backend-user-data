@@ -51,7 +51,7 @@ class Auth:
             return None
 
         import os
-        
+
         cookie_name = os.getenv("SESSION_NAME", None)
         if cookie_name is not None:
             return request.cookies.get(cookie_name, None)

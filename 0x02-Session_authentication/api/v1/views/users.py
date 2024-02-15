@@ -136,4 +136,6 @@ def retrieve_user() -> User:
     """GET /users/me
     Retrieve the authenticated User object
     """
+    print("Called retrieve_user and current_user is {}".format(
+        request.current_user.to_json()))
     return jsonify(request.current_user.to_json()), 200

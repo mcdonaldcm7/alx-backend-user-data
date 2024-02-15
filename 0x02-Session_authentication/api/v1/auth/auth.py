@@ -42,3 +42,11 @@ class Auth:
         """Unimplemented method for template
         """
         return None
+
+    def session_cookie(self, request=None):
+        """
+        Return a cookie value from a request
+        """
+        if request is None:
+            return None
+        return request.cookies.get("_my_session_id", None)

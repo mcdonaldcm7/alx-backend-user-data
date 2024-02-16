@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
 """
+Module for Sessions in database, retrieves user and session info from a
+database
 """
 from .session_exp_auth import SessionExpAuth
 
 
 class SessionDBAuth(SessionExpAuth):
     """
+    Child of SessionExpAuth class that uses a database to store info
     """
 
     def create_session(self, user_id=None):
         """ Creates and Stores a new instance of UserSession and Returns the
         Session ID
         """
-        # session_id = super().create_session(user_id)
-        if user_id is None:
+        session_id = super().create_session(user_id)
+        if session_id is None:
             return None
-        import uuid
 
-        session_id = str(uuid.uuid4())
         from models.user_session import UserSession
 
         user_session = UserSession(user_id=user_id, session_id=session_id)
@@ -30,14 +31,28 @@ class SessionDBAuth(SessionExpAuth):
         """
         if session_id is None:
             return None
-        from models.base import DATA
 
+        from models.base import DATA
+        from models.user_session import UserSession
+
+        user_id = None
         session_db_objs = DATA["UserSession"]
         for k, v in session_db_objs.items():
             if v.session_id == session_id:
-                return k
+                user_id = k
 
-        return None
+        session_dictionary = self.user_id_by_session_id[session_id]
+
+        from datetime import datetime, timedelta
+
+        if self.session_duration <= 0:
+            return session_dictionary["user_id"]
+        if "created_at" not in session_dictionary:
+            return None
+        if ((session_dictionary["created_at"] + timedelta(
+                seconds=self.session_duration)) < datetime.now()):
+            return None
+        return session_dictionary["user_id"]
 
     def destroy_session(self, request=None):
         """ Destroys the UserSession based on the Session ID from the request

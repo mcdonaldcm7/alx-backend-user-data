@@ -18,8 +18,8 @@ class DB:
     def __init__(self) -> None:
         """Initialize a new DB instance
         """
-        # If you want more output generated set echo to True
-        self._engine = create_engine("sqlite:///a.db", echo=False)
+        # If you want less output generated set echo to False
+        self._engine = create_engine("sqlite:///a.db", echo=True)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         self.__session = None

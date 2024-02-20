@@ -5,8 +5,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
-from sqlalchemy.orm.exc import NoResultFound, IntegrityError
-from sqlalchemy.exc import InvalidRequestError, MultipleResultsFound
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import (InvalidRequestError, MultipleResultsFound,
+                            IntegrityError)
 
 from user import Base, User
 from typing import Any
@@ -20,7 +21,7 @@ class DB:
         """Initialize a new DB instance
         """
         # If you want less output generated set echo to False
-        self._engine = create_engine("sqlite:///a.db", echo=True)
+        self._engine = create_engine("sqlite:///a.db", echo=False)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         self.__session = None
@@ -34,7 +35,7 @@ class DB:
             self.__session = DBSession()
         return self.__session
 
-    def add_user(self, email: str, hashed_password: str) -> Any:
+    def add_user(self, email: str, hashed_password: str) -> User:
         """Save the user to the database
         Return a new User object from the parameters passed
         """

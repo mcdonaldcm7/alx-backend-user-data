@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """DB module
 """
 from sqlalchemy import create_engine
@@ -45,7 +44,7 @@ class DB:
             self._session.commit()
         except IntegrityError:
             self._session.rollback()
-            # raise ValueError("User already exists with this email")
+            raise ValueError("User already exists with this email")
         return new_user
 
     def find_user_by(self, **kwargs: dict) -> User:

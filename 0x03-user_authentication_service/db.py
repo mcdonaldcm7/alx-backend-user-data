@@ -5,10 +5,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm.exc import NoResultFound, IntegrityError
 from sqlalchemy.exc import InvalidRequestError, MultipleResultsFound
 
 from user import Base, User
+from typing import Any
 
 
 class DB:
@@ -33,13 +34,17 @@ class DB:
             self.__session = DBSession()
         return self.__session
 
-    def add_user(self, email: str, hashed_password: str) -> User:
+    def add_user(self, email: str, hashed_password: str) -> Any:
         """Save the user to the database
         Return a new User object from the parameters passed
         """
         new_user = User(email=email, hashed_password=hashed_password)
         self._session.add(new_user)
-        self._session.commit()
+        try:
+            self._session.commit()
+        except IntegrityError:
+            self._session.rollback()
+            # raise ValueError("User already exists with this email")
         return new_user
 
     def find_user_by(self, **kwargs: dict) -> User:

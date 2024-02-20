@@ -39,11 +39,7 @@ class DB:
         """
         new_user = User(email=email, hashed_password=hashed_password)
         self._session.add(new_user)
-        try:
-            self._session.commit()
-        except IntegrityError:
-            self._session.rollback()
-            raise ValueError("User already exists with this email!")
+        self._session.commit()
         return new_user
 
     def find_user_by(self, **kwargs: dict) -> User:

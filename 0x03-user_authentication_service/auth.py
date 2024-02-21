@@ -2,6 +2,7 @@
 """Authentication Module
 """
 import bcrypt
+import uuid
 from db import DB
 from sqlalchemy.orm.exc import NoResultFound
 from typing import Union
@@ -55,8 +56,6 @@ class Auth:
         """
         Generates and returns a string representation of a new UUID
         """
-        import uuid
-
         return str(uuid.uuid4())
 
     def create_session(self, email: str) -> str:
@@ -95,7 +94,6 @@ class Auth:
         Generates a reset password token and updates the user's reset_token
         Return reset password token generated
         """
-        import uuid
         user = self._db.find_user_by(email=email)
         if user is not None:
             reset_token = str(uuid.uuid4())

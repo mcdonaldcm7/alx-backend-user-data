@@ -9,7 +9,7 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from sqlalchemy.exc import (InvalidRequestError, IntegrityError)
 
 from user import Base, User
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 
 class DB:
@@ -47,7 +47,7 @@ class DB:
             raise ValueError("User already exists with this email")
         return new_user
 
-    def find_user_by(self, **kwargs: Dict[str, Any]) -> User:
+    def find_user_by(self, **kwargs: Dict[str, Any]) -> Union[User, None]:
         """
         Returns the first row found in the users table as filtered by the
         **kwargs argument

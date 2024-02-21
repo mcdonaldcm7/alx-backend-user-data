@@ -67,7 +67,7 @@ class DB:
         except InvalidRequestError:
             raise InvalidRequestError
 
-    def update_user(self, user_id, **kwargs):
+    def update_user(self, user_id: int, **kwargs: Dict[str, Any]) -> None:
         """
         Locates the user with ID user_id and updates the user's attributes as
         passed in the method's argument then commit changes to the database
@@ -85,3 +85,5 @@ class DB:
             raise NoResultFound()
         except MultipleResultsFound:
             raise MultipleResultsFound()
+        except InvalidRequestError:
+            raise InvalidRequestError()

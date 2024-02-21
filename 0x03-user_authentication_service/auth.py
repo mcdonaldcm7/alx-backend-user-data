@@ -23,11 +23,15 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    def register_user(self, email, password):
+    def register_user(self, email: str, password: str) -> User:
         """
         Register a new user if the user doesn't already exist
         """
-        user = self._db.find_user_by(email=email)
+        try:
+            user = self._db.find_user_by(email=email)
+        except NoResultFound:
+            user = None
+
         if user is None:
             return self._db.add_user(email, _hash_password(password))
         else:

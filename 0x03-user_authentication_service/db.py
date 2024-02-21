@@ -47,7 +47,7 @@ class DB:
             raise ValueError("User already exists with this email")
         return new_user
 
-    def find_user_by(self, **kwargs: Dict[str, Any]) -> Union[User, None]:
+    def find_user_by(self, **kwargs) -> Union[User, None]:
         """
         Returns the first row found in the users table as filtered by the
         **kwargs argument
@@ -67,7 +67,7 @@ class DB:
         except InvalidRequestError:
             raise InvalidRequestError
 
-    def update_user(self, user_id: int, **kwargs: Dict[str, Any]) -> None:
+    def update_user(self, user_id: int, **kwargs) -> None:
         """
         Locates the user with ID user_id and updates the user's attributes as
         passed in the method's argument then commit changes to the database

@@ -47,7 +47,7 @@ class DB:
             raise ValueError("User already exists with this email")
         return new_user
 
-    def find_user_by(self, **kwargs: dict) -> User:
+    def find_user_by(self, **kwargs: dict) -> Any:
         """
         Returns the first row found in the users table as filtered by the
         **kwargs argument

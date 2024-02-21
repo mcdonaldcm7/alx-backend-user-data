@@ -53,7 +53,8 @@ class DB:
         **kwargs argument
         """
         try:
-            valid_query_args = {"id", "email", "hashed_password", "session_id"}
+            valid_query_args = {"id", "email", "hashed_password", "session_id",
+                                "reset_token"}
             invalid_args = set(kwargs.keys()) - valid_query_args
             if invalid_args:
                 raise InvalidRequestError()

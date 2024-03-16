@@ -34,7 +34,7 @@ class Auth:
     def authorization_header(self, request=None) -> str:
         """Unimplemented method for template
         """
-        if 'Authorization' in request.headers:
+        if request is not None and 'Authorization' in request.headers:
             return request.headers.get("Authorization")
         return None
 
